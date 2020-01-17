@@ -237,6 +237,8 @@ def todo():
                     db.session.add(Tags(tag=tag, author=current_user))
                     db.session.commit()
             return redirect(url_for("todo"))
+        elif "filter_views" in request.form:
+            return redirect(url_for("todo"))
 
     user_todos = current_user.todo_items.all()
     todos = []

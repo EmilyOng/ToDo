@@ -1,4 +1,10 @@
 document.getElementById("logout_button").style.visibility = "visible";
+
+function handle_filter () {
+  var filter_selected = document.getElementById("filter_views").value;
+  filter_form.submit();
+}
+
 function create_task () {
     var start_date = document.getElementById("todo_start_date").value;
     var due_date = document.getElementById("todo_due_date").value;
@@ -28,10 +34,10 @@ function track_tags () {
         tag.value = tag.value.replace(",", "");
         var index = todo_tag.value.indexOf(tag.value);
         if (index == -1) {
-            tags_platform.innerHTML += "<div style='display:inline;'><span value=4 class='badge badge-primary'>"+
-                                        "<div style='display:inline;'>"+tag.value+"</div>"+
-                                        "&nbsp<button class='btn btn-small btn-light tag' onclick='remove_tag(this)'>"+
-                                        "&times</button></span>&nbsp;</div>"
+            tags_platform.innerHTML += "<div style='display:inline;'><span value=4 class='badge badge-primary'>\
+                                        <div style='display:inline;'>"+tag.value+"</div>\
+                                        &nbsp<button class='btn btn-small btn-light tag' onclick='remove_tag(this)'>\
+                                        &times</button></span>&nbsp;</div>"
             todo_tag.value += tag.value + ",";
         }
         tag.value = "";
