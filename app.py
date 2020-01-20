@@ -238,9 +238,51 @@ def todo():
                     db.session.commit()
             return redirect(url_for("todo"))
         elif "filter_views" in request.form:
+            session["filter_views"] = request.form["filter_views"]
             return redirect(url_for("todo"))
 
-    user_todos = current_user.todo_items.all()
+    user_todos = []
+    if session and "filter_views" in session and session["filter_views"] != "filter_date_added":
+        filter_view = session["filter_views"]
+        user_todos = current_user.todo_items.all()
+        # id, title, tag, body, start_date, due_date, completed, user_id
+        if filter_view == "filter_due_date":
+            todos_dated = []
+            todos_dated_dict = {}
+            todos_dated_counter = 0
+            todos_undated = []
+            for todo in user_todos:
+                if todo.due_date:
+                    todos_dated.append((todo.due_date, todos_dated_counter))
+                    todos_dated_dict[todos_dated_counter] = todo
+                    todos_dated_counter += 1
+                else:
+                    todos_undated.append(todo)
+            # Sort by date
+            todos_dated.sort()
+
+            user_todos = []
+            for todo in todos_dated:
+                user_todos.append(todos_dated_dict[todo[1]])
+            for todo in todos_undated:
+                user_todos.append(todo)
+        else:
+            # filter_tags_number
+            todos_tag = []
+            todos_tag_counter = 0
+            todos_tag_dict = {}
+            for todo in user_todos:
+                todos_tag.append((todo.tag.count(","), todos_tag_counter))
+                todos_tag_dict[todos_tag_counter] = todo
+                todos_tag_counter += 1
+            todos_tag.sort()
+            user_todos = []
+            for todo in todos_tag:
+                user_todos.append(todos_tag_dict[todo[1]])
+
+    else:
+        user_todos = current_user.todo_items.all()
+
     todos = []
     for user_todo in user_todos:
         start_date = user_todo.start_date
@@ -289,7 +331,20 @@ def todo():
     tags = []
     for user_tag in user_tags:
         tags.append(user_tag.tag)
-    return render_template("todo.html", todos=todos, todos_json=json.dumps(todos), tags=tags)
+
+    if session and "filter_views" in session:
+        filter_view = session["filter_views"]
+        session.pop("filter_views")
+        if filter_view == "filter_date_added":
+            filter_view = "Sort by date added"
+        elif filter_view == "filter_due_date":
+            filter_view = "Sort by due date"
+        else:
+            # filter_tags_number
+            filter_view = "Sort by number of tags"
+    else:
+        filter_view = ""
+    return render_template("todo.html", todos=todos, todos_json=json.dumps(todos), tags=tags, filter_view=filter_view)
 
 
 if __name__ == "__main__":

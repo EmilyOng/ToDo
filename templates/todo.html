@@ -2,7 +2,7 @@
 
 {% block content %}
 
-<div class="alert alert-light role="alert">
+<div class="alert alert-light" role="alert">
     <h4 class="alert-heading">Do something today!</h4>
     <p>
         Create a new task!
@@ -41,6 +41,7 @@
     <div class="form-group">
       <label for="filter_views">Filter Task Views</label>
       <select class="form-control" name="filter_views" id="filter_views">
+        <option>{{filter_view}}</option>
         <option value="filter_date_added">Sort by date added</option>
         <option value="filter_due_date">Sort by due date</option>
         <option value="filter_tags_number">Sort by number of tags</option>
