@@ -51,14 +51,11 @@
     </form>
   </div>
   &nbsp
-  <!-- <form id="reverse_filter_form" method="post" style="display:inline-block;"> -->
-    <!-- <input style="display:none;" name="filter_views" id="filter_type"> -->
     <button name="reverse_filter" onclick="filter_reverse();" class="btn btn-primary" style="display:inline-block">
       <i class="fa fa-arrow-up" aria-hidden="true"></i>
       <i class="fa fa-arrow-down" aria-hidden="true"></i>
       Reverse List
     </button>
-  <!-- </form> -->
 </center>
 
 <!-- Modal form to create tasks -->
@@ -125,9 +122,14 @@
   <div class="card">
       <div class="card-header">
           {{todos[x]["Title"]}}
-              <button type="button" style="float:right; opacity:40%;"
+              <button type="button" style="float:right; opacity:70%;"
                       class="btn btn-danger" data-toggle="modal" data-target="#delete_task_modal">
                   Delete task
+              </button>
+
+              <button type="button" style="float:right; opacity:70%;"
+                      class="btn btn-primary" data-toggle="modal" data-target="#edit_task_modal">
+                  Edit task
               </button>
               <div class="modal fade" id="delete_task_modal" tabindex="-1" role="dialog" aria-labelledby="delete_task_modal" aria-hidden="true">
                   <div class="modal-dialog" role="document">
