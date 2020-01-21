@@ -6,13 +6,20 @@ function handle_filter () {
 }
 
 function filter_reverse () {
-  var filter_selected = document.getElementById("filter_views").value;
-  var filters = {"Sort by date added": "filter_date_added",
-                  "Sort by due date": "filter_due_date",
-                  "Sort by number of tags": "Sort by number of tags",
-                  "": ""};
-  document.getElementById("filter_type").value = filters[filter_selected];
-  reverse_filter_form.submit();
+  var todo_list = document.getElementById("todo_list");
+  var child_count = todo_list.childElementCount;
+  var todo_children = [];
+  while (todo_list.firstChild) {
+    if (todo_list.firstChild.nodeName == "DIV") {
+      todo_children.push(todo_list.firstChild);
+    }
+    todo_list.removeChild(todo_list.firstChild);
+  }
+  for (var i=parseInt(child_count/2)-1; i>=0; i--) {
+    todo_list.appendChild(todo_children[i]);
+    var br = document.createElement("br");
+    todo_list.appendChild(br);
+  }
 }
 
 function create_task () {

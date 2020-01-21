@@ -51,14 +51,14 @@
     </form>
   </div>
   &nbsp
-  <form id="reverse_filter_form" method="post" style="display:inline-block;">
-    <input style="display:none;" name="filter_views" id="filter_type">
+  <!-- <form id="reverse_filter_form" method="post" style="display:inline-block;"> -->
+    <!-- <input style="display:none;" name="filter_views" id="filter_type"> -->
     <button name="reverse_filter" onclick="filter_reverse();" class="btn btn-primary" style="display:inline-block">
       <i class="fa fa-arrow-up" aria-hidden="true"></i>
       <i class="fa fa-arrow-down" aria-hidden="true"></i>
       Reverse List
     </button>
-  </form>
+  <!-- </form> -->
 </center>
 
 <!-- Modal form to create tasks -->
@@ -120,58 +120,59 @@
 <br/>
 
 <!-- Display tasks -->
-{% for x in range (todos|length) %}
-<div class="card">
-    <div class="card-header">
-        {{todos[x]["Title"]}}
-            <button type="button" style="float:right; opacity:40%;"
-                    class="btn btn-danger" data-toggle="modal" data-target="#delete_task_modal">
-                Delete task
-            </button>
-            <div class="modal fade" id="delete_task_modal" tabindex="-1" role="dialog" aria-labelledby="delete_task_modal" aria-hidden="true">
-                <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel">Are you sure you want to delete the task?</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <form method="post">
-                                <button type="submit" class="btn btn-danger" name="delete_task" value={{todos[x]["id"]}}>
-                                    Delete task
-                                </button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-    </div>
-    <div class="card-body">
-        <h5 class="card-title">
-            {% for tag in todos[x]["Tag"] %}
-                <span class="badge badge-primary">{{tag}}</span>
-            {% endfor %}
-            {% if todos[x]["Days left"]|length > 0 %}
-                <span class="badge badge-light">{{todos[x]["Days left"]}}</span>
-            {% endif %}
-        </h5>
-        <hr/>
-        {% if todos[x]["Start date"] != None %}
-            <p>Start date: {{todos[x]["Start date"]}}</p>
-        {% endif %}
-        {% if todos[x]["Due date"] != None %}
-            <p>Due date: {{todos[x]["Due date"]}}</p>
-        {% endif %}
-        <hr/>
-        <p class="card-text">{{todos[x]["Body"]}}</p>
-     </div>
+<div id="todo_list">
+  {% for x in range (todos|length) %}
+  <div class="card">
+      <div class="card-header">
+          {{todos[x]["Title"]}}
+              <button type="button" style="float:right; opacity:40%;"
+                      class="btn btn-danger" data-toggle="modal" data-target="#delete_task_modal">
+                  Delete task
+              </button>
+              <div class="modal fade" id="delete_task_modal" tabindex="-1" role="dialog" aria-labelledby="delete_task_modal" aria-hidden="true">
+                  <div class="modal-dialog" role="document">
+                      <div class="modal-content">
+                          <div class="modal-header">
+                              <h5 class="modal-title" id="exampleModalLabel">Are you sure you want to delete the task?</h5>
+                              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                  <span aria-hidden="true">&times;</span>
+                              </button>
+                          </div>
+                          <div class="modal-footer">
+                              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                              <form method="post">
+                                  <button type="submit" class="btn btn-danger" name="delete_task" value={{todos[x]["id"]}}>
+                                      Delete task
+                                  </button>
+                              </form>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+      </div>
+      <div class="card-body">
+          <h5 class="card-title">
+              {% for tag in todos[x]["Tag"] %}
+                  <span class="badge badge-primary">{{tag}}</span>
+              {% endfor %}
+              {% if todos[x]["Days left"]|length > 0 %}
+                  <span class="badge badge-light">{{todos[x]["Days left"]}}</span>
+              {% endif %}
+          </h5>
+          <hr/>
+          {% if todos[x]["Start date"] != None %}
+              <p>Start date: {{todos[x]["Start date"]}}</p>
+          {% endif %}
+          {% if todos[x]["Due date"] != None %}
+              <p>Due date: {{todos[x]["Due date"]}}</p>
+          {% endif %}
+          <hr/>
+          <p class="card-text">{{todos[x]["Body"]}}</p>
+       </div>
+  </div>
+  <br/>
+  {% endfor %}
 </div>
-<br/>
-
-{% endfor %}
 
 <script>
 {% include "js/todo.js" %}
