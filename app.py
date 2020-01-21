@@ -237,12 +237,17 @@ def todo():
                     db.session.add(Tags(tag=tag, author=current_user))
                     db.session.commit()
             return redirect(url_for("todo"))
-        elif "filter_views" in request.form:
+        elif "filter_views" in request.form and "reverse_filter" not in request.form:
+            session["filter_views"] = request.form["filter_views"]
+            return redirect(url_for("todo"))
+        elif "reverse_filter" in request.form and "filter_views" in request.form:
+            session["reverse_filter"] = 1
             session["filter_views"] = request.form["filter_views"]
             return redirect(url_for("todo"))
 
     user_todos = []
-    if session and "filter_views" in session and session["filter_views"] != "filter_date_added":
+    if (session and "filter_views" in session and
+        session["filter_views"] != "filter_date_added" and session["filter_views"] != ""):
         filter_view = session["filter_views"]
         user_todos = current_user.todo_items.all()
         # id, title, tag, body, start_date, due_date, completed, user_id
@@ -282,6 +287,10 @@ def todo():
 
     else:
         user_todos = current_user.todo_items.all()
+
+    if session and "reverse_filter" in session:
+        user_todos.reverse()
+        session.pop("reverse_filter")
 
     todos = []
     for user_todo in user_todos:
@@ -332,7 +341,7 @@ def todo():
     for user_tag in user_tags:
         tags.append(user_tag.tag)
 
-    if session and "filter_views" in session:
+    if session and "filter_views" in session and session["filter_views"] != "":
         filter_view = session["filter_views"]
         session.pop("filter_views")
         if filter_view == "filter_date_added":

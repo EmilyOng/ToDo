@@ -37,17 +37,28 @@
 
 <!-- Filter task views -->
 <center>
-  <form id="filter_form" method="post" onchange="handle_filter();">
-    <div class="form-group">
-      <label for="filter_views">Filter Task Views</label>
-      <select class="form-control" name="filter_views" id="filter_views">
-        <option>{{filter_view}}</option>
-        <option value="filter_date_added">Sort by date added</option>
-        <option value="filter_due_date">Sort by due date</option>
-        <option value="filter_tags_number">Sort by number of tags</option>
-      </select>
-    </div>
-  </form>`
+  <div style="display:inline-block; width:70%;">
+    <form id="filter_form" method="post" onchange="handle_filter();">
+      <div class="form-group">
+        <label for="filter_views">Filter Task Views</label>
+        <select class="form-control" name="filter_views" id="filter_views">
+          <option>{{filter_view}}</option>
+          <option value="filter_date_added">Sort by date added</option>
+          <option value="filter_due_date">Sort by due date</option>
+          <option value="filter_tags_number">Sort by number of tags</option>
+        </select>
+      </div>
+    </form>
+  </div>
+  &nbsp
+  <form id="reverse_filter_form" method="post" style="display:inline-block;">
+    <input style="display:none;" name="filter_views" id="filter_type">
+    <button name="reverse_filter" onclick="filter_reverse();" class="btn btn-primary" style="display:inline-block">
+      <i class="fa fa-arrow-up" aria-hidden="true"></i>
+      <i class="fa fa-arrow-down" aria-hidden="true"></i>
+      Reverse List
+    </button>
+  </form>
 </center>
 
 <!-- Modal form to create tasks -->

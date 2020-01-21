@@ -5,6 +5,16 @@ function handle_filter () {
   filter_form.submit();
 }
 
+function filter_reverse () {
+  var filter_selected = document.getElementById("filter_views").value;
+  var filters = {"Sort by date added": "filter_date_added",
+                  "Sort by due date": "filter_due_date",
+                  "Sort by number of tags": "Sort by number of tags",
+                  "": ""};
+  document.getElementById("filter_type").value = filters[filter_selected];
+  reverse_filter_form.submit();
+}
+
 function create_task () {
     var start_date = document.getElementById("todo_start_date").value;
     var due_date = document.getElementById("todo_due_date").value;
