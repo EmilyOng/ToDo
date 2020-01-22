@@ -27,8 +27,8 @@ function create_task () {
     var due_date = document.getElementById("todo_due_date").value;
     if (start_date!="" && due_date!="") {
         if (start_date > due_date) {
-            document.getElementById("create_task_error").innerHTML = "Start date cannot be later than due date.";
-            document.getElementById("create_task_error").style.visibility = "visible";
+            document.getElementById("task_error").innerHTML = "Start date cannot be later than due date.";
+            document.getElementById("task_error").style.visibility = "visible";
             event.preventDefault();
         }
         else {
@@ -94,4 +94,22 @@ function clear_tag (tag) {
         root.parentNode.removeChild(root);
         delete_tag.click();
     }
+}
+
+function confirm_delete_task (btn) {
+  var original_btn = btn;
+  while (btn.parentNode) {
+    btn = btn.parentNode;
+    if (btn.parentNode.getAttribute("class") == "delete_task_panel") {
+      break;
+    }
+  }
+  var id_attribute = btn.getAttribute("id");
+  var char = id_attribute.split("_");
+  var id = char[char.length-1];
+  console.log(id);
+  original_btn.setAttribute("name", id_attribute);
+  original_btn.setAttribute("value", id);
+  original_btn.parentNode.setAttribute("id", "delete_task_form_"+id.toString());
+  document.getElementById("delete_task_form_"+id.toString()).submit();
 }

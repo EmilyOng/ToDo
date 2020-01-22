@@ -177,8 +177,8 @@ def todo():
     if request.form:
         if "logout" in request.form:
             return redirect(url_for("logout"))
-        elif "delete_task" in request.form:
-            task = ToDo.query.filter(ToDo.id == int(request.form["delete_task"])).first()
+        elif "delete_task" in list(request.form.keys())[0]:
+            task = ToDo.query.filter(ToDo.id == int(request.form[list(request.form.keys())[0]])).first()
             db.session.delete(task)
             db.session.commit()
             return redirect(url_for("todo"))

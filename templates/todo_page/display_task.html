@@ -1,58 +1,51 @@
 <div id="todo_list">
-  {% for x in range (todos|length) %}
-  <div class="card">
-      <div class="card-header">
-          {{todos[x]["Title"]}}
-              <button type="button" style="float:right; opacity:70%;"
-                      class="btn btn-danger" data-toggle="modal" data-target="#delete_task_modal">
-                  Delete task
-              </button>
-
-              <button type="button" style="float:right; opacity:70%;"
-                      class="btn btn-primary" data-toggle="modal" data-target="#edit_task_modal">
-                  Edit task
-              </button>
-              <div class="modal fade" id="delete_task_modal" tabindex="-1" role="dialog" aria-labelledby="delete_task_modal" aria-hidden="true">
-                  <div class="modal-dialog" role="document">
-                      <div class="modal-content">
-                          <div class="modal-header">
-                              <h5 class="modal-title" id="exampleModalLabel">Are you sure you want to delete the task?</h5>
-                              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                  <span aria-hidden="true">&times;</span>
-                              </button>
-                          </div>
-                          <div class="modal-footer">
-                              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                              <form method="post">
-                                  <button type="submit" class="btn btn-danger" name="delete_task" value={{todos[x]["id"]}}>
-                                      Delete task
-                                  </button>
-                              </form>
-                          </div>
-                      </div>
+  {% for todo in todos %}
+    <div class="card">
+        <div class="card-header">
+            {{todo["Title"]}}
+                {% with delete_modal_id="delete_task_"+(todo['id']|string) %}
+                  <div class="delete_task_panel">
+                    {% set delete_modal_target="#"+delete_modal_id %}
+                    {% set id=todo["id"] %}
+                    <button type="button" style="float:right; opacity:70%;"
+                            class="btn btn-danger" data-toggle="modal" name={{delete_modal_id}}
+                            value={{id}} data-target={{delete_modal_target}} onclick="event.preventDefault();return false;">
+                        Delete task
+                    </button>
+                    {% include "todo_page/delete_task.html" %}
                   </div>
-              </div>
-      </div>
-      <div class="card-body">
-          <h5 class="card-title">
-              {% for tag in todos[x]["Tag"] %}
-                  <span class="badge badge-primary">{{tag}}</span>
-              {% endfor %}
-              {% if todos[x]["Days left"]|length > 0 %}
-                  <span class="badge badge-light">{{todos[x]["Days left"]}}</span>
-              {% endif %}
-          </h5>
-          <hr/>
-          {% if todos[x]["Start date"] != None %}
-              <p>Start date: {{todos[x]["Start date"]}}</p>
-          {% endif %}
-          {% if todos[x]["Due date"] != None %}
-              <p>Due date: {{todos[x]["Due date"]}}</p>
-          {% endif %}
-          <hr/>
-          <p class="card-text">{{todos[x]["Body"]}}</p>
-       </div>
-  </div>
-  <br/>
+                {% endwith %}
+
+                <button type="button" style="float:right; opacity:70%;"
+                        class="btn btn-primary" data-toggle="modal" data-target="#edit_task_modal">
+                    Edit task
+                </button>
+
+                <!-- Modal form to edit tasks -->
+                {% with modal_type="edit_task_modal", message="Edit" %}
+                  {% include "todo_page/modal_form.html" %}
+                {% endwith %}
+        </div>
+        <div class="card-body">
+            <h5 class="card-title">
+                {% for tag in todo["Tag"] %}
+                    <span class="badge badge-primary">{{tag}}</span>
+                {% endfor %}
+                {% if todo["Days left"]|length > 0 %}
+                    <span class="badge badge-light">{{todo["Days left"]}}</span>
+                {% endif %}
+            </h5>
+            <hr/>
+            {% if todo["Start date"] != None %}
+                <p>Start date: {{todo["Start date"]}}</p>
+            {% endif %}
+            {% if todo["Due date"] != None %}
+                <p>Due date: {{todo["Due date"]}}</p>
+            {% endif %}
+            <hr/>
+            <p class="card-text">{{todo["Body"]}}</p>
+         </div>
+    </div>
+    <br/>
   {% endfor %}
 </div>

@@ -39,7 +39,9 @@
 {% include "todo_page/filter_task_views.html" %}
 
 <!-- Modal form to create tasks -->
-{% include "todo_page/modal_form.html" %}
+{% with modal_type="add_task_modal", message="Create" %}
+  {% include "todo_page/modal_form.html" %}
+{% endwith %}
 
 <br/>
 

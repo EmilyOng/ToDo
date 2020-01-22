@@ -1,13 +1,13 @@
-<div class="modal fade" id="add_task_modal" tabindex="-1" role="dialog" aria-labelledby="add_task_modal" aria-hidden="true">
+<div class="modal fade" id={{modal_type}} tabindex="-1" role="dialog" aria-labelledby={{modal_type}} aria-hidden="true">
   <div class="modal-dialog" role="document">
       <div class="modal-content">
           <div class="modal-header">
-              <h5 class="modal-title">Create a new task</h5>
+              <h5 class="modal-title">{{message}} a new task</h5>
               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                   <span aria-hidden="true">&times;</span>
               </button>
           </div>
-          <form method="post" id="create_task_form" onkeydown="return event.key!='Enter';" onsubmit="create_task();">
+          <form method="post" id="task_form" onkeydown="return event.key!='Enter';" onsubmit="create_task();">
             <div class="modal-body">
                 <div class="form-group">
                     <label for="todo_title">Title</label>
@@ -24,7 +24,7 @@
                         <br/><br/>
                     {% endif %}
                     <input type="text" class="form-control" placeholder="Add task tag"
-                           id="todo_tag" onkeydown="track_tags();"/>
+                           id="todo_tag" onkeydown="track_tags();" autocomplete="off"/>
                     <hr/>
                     <small>Tags for this task</small><br>
                     <div id="tags_platform"></div>
@@ -42,7 +42,7 @@
                     <label for="todo_due_date">Due Date</label>
                     <input type="date" class="form-control" id="todo_due_date" name="todo_due_date"/>
                 </div>
-                <div class="alert alert-danger" id="create_task_error" style="visibility:hidden;" role="alert"></div>
+                <div class="alert alert-danger" id="task_error" style="visibility:hidden;" role="alert"></div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
