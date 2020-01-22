@@ -36,145 +36,15 @@
 </div>
 
 <!-- Filter task views -->
-<center>
-  <div style="display:inline-block; width:70%;">
-    <form id="filter_form" method="post" onchange="handle_filter();">
-      <div class="form-group">
-        <label for="filter_views">Filter Task Views</label>
-        <select class="form-control" name="filter_views" id="filter_views">
-          <option>{{filter_view}}</option>
-          <option value="filter_date_added">Sort by date added</option>
-          <option value="filter_due_date">Sort by due date</option>
-          <option value="filter_tags_number">Sort by number of tags</option>
-        </select>
-      </div>
-    </form>
-  </div>
-  &nbsp
-    <button name="reverse_filter" onclick="filter_reverse();" class="btn btn-primary" style="display:inline-block">
-      <i class="fa fa-arrow-up" aria-hidden="true"></i>
-      <i class="fa fa-arrow-down" aria-hidden="true"></i>
-      Reverse List
-    </button>
-</center>
+{% include "todo_page/filter_task_views.html" %}
 
 <!-- Modal form to create tasks -->
-<div class="modal fade" id="add_task_modal" tabindex="-1" role="dialog" aria-labelledby="add_task_modal" aria-hidden="true">
-<div class="modal-dialog" role="document">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h5 class="modal-title">Create a new task</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
-        <form method="post" id="create_task_form" onkeydown="return event.key!='Enter';" onsubmit="create_task();">
-          <div class="modal-body">
-              <div class="form-group">
-                  <label for="todo_title">Title</label>
-                  <input type="text" class="form-control" name="todo_title"/>
-              </div>
-              <div class="form-group">
-                  <label for="todo_tag">Tag</label>
-                  <br/>
-                  {% if tags %}
-                      <small>My tags</small><br>
-                      {% for tag in tags %}
-                          <span class="badge badge-info">{{tag}}</span>&nbsp
-                      {% endfor %}
-                      <br/><br/>
-                  {% endif %}
-                  <input type="text" class="form-control" placeholder="Add task tag"
-                         id="todo_tag" onkeydown="track_tags();"/>
-                  <hr/>
-                  <small>Tags for this task</small><br>
-                  <div id="tags_platform"></div>
-                  <input type="text" style="visibility:hidden;" id="track_todo_tags" name="todo_tag" value=""/>
-              </div>
-              <div class="form-group">
-                  <label for="todo_body">Body Text</label>
-                  <textarea class="form-control" rows=3 name="todo_body"></textarea>
-              </div>
-              <div class="form-group">
-                  <label for="todo_start_date">Start Date</label>
-                  <input type="date" class="form-control" id="todo_start_date" name="todo_start_date"/>
-              </div>
-              <div class="form-group">
-                  <label for="todo_due_date">Due Date</label>
-                  <input type="date" class="form-control" id="todo_due_date" name="todo_due_date"/>
-              </div>
-              <div class="alert alert-danger" id="create_task_error" style="visibility:hidden;" role="alert"></div>
-          </div>
-          <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-              <button type="submit" name="create_todo" class="btn btn-primary">Save changes</button>
-          </div>
-        </form>
-    </div>
-</div>
-</div>
+{% include "todo_page/modal_form.html" %}
 
 <br/>
 
 <!-- Display tasks -->
-<div id="todo_list">
-  {% for x in range (todos|length) %}
-  <div class="card">
-      <div class="card-header">
-          {{todos[x]["Title"]}}
-              <button type="button" style="float:right; opacity:70%;"
-                      class="btn btn-danger" data-toggle="modal" data-target="#delete_task_modal">
-                  Delete task
-              </button>
-
-              <button type="button" style="float:right; opacity:70%;"
-                      class="btn btn-primary" data-toggle="modal" data-target="#edit_task_modal">
-                  Edit task
-              </button>
-              <div class="modal fade" id="delete_task_modal" tabindex="-1" role="dialog" aria-labelledby="delete_task_modal" aria-hidden="true">
-                  <div class="modal-dialog" role="document">
-                      <div class="modal-content">
-                          <div class="modal-header">
-                              <h5 class="modal-title" id="exampleModalLabel">Are you sure you want to delete the task?</h5>
-                              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                  <span aria-hidden="true">&times;</span>
-                              </button>
-                          </div>
-                          <div class="modal-footer">
-                              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                              <form method="post">
-                                  <button type="submit" class="btn btn-danger" name="delete_task" value={{todos[x]["id"]}}>
-                                      Delete task
-                                  </button>
-                              </form>
-                          </div>
-                      </div>
-                  </div>
-              </div>
-      </div>
-      <div class="card-body">
-          <h5 class="card-title">
-              {% for tag in todos[x]["Tag"] %}
-                  <span class="badge badge-primary">{{tag}}</span>
-              {% endfor %}
-              {% if todos[x]["Days left"]|length > 0 %}
-                  <span class="badge badge-light">{{todos[x]["Days left"]}}</span>
-              {% endif %}
-          </h5>
-          <hr/>
-          {% if todos[x]["Start date"] != None %}
-              <p>Start date: {{todos[x]["Start date"]}}</p>
-          {% endif %}
-          {% if todos[x]["Due date"] != None %}
-              <p>Due date: {{todos[x]["Due date"]}}</p>
-          {% endif %}
-          <hr/>
-          <p class="card-text">{{todos[x]["Body"]}}</p>
-       </div>
-  </div>
-  <br/>
-  {% endfor %}
-</div>
+{% include "todo_page/display_task.html" %}
 
 <script>
 {% include "js/todo.js" %}
