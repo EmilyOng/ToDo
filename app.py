@@ -13,7 +13,7 @@ load_dotenv(os.path.join(project_folder, ".env"))
 
 app = Flask(__name__)
 
-app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY", default=False)
+app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY", default="secret")
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///database.sqlite3"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
@@ -239,6 +239,30 @@ def todo():
             return redirect(url_for("todo"))
         elif "filter_views" in request.form:
             session["filter_views"] = request.form["filter_views"]
+            return redirect(url_for("todo"))
+        elif "edit_task_form" in list(request.form.keys()):
+            keys = list(request.form.keys())
+            keys.remove("edit_task_form")
+            char = keys[0].split("_")
+            id = int(char[len(char)-1])
+            task = ToDo.query.filter(ToDo.id == id).first()
+            # title, body, start_date, due_date
+            for key in keys:
+                if "title" in key:
+                    task.title = request.form[key]
+                elif "body" in key:
+                    task.body = request.form[key]
+                elif "start_date" in key and len(request.form[key]) > 0:
+                    start_date = request.form[key].split("-")
+                    start_date = [int(d) for d in start_date]
+                    start_date = datetime(start_date[0], start_date[1], start_date[2])
+                    task.start_date = start_date
+                elif "due_date" in key and len(request.form[key]) > 0:
+                    due_date = request.form[key].split("-")
+                    due_date = [int(d) for d in due_date]
+                    due_date = datetime(due_date[0], due_date[1], due_date[2])
+                    task.due_date = due_date
+            db.session.commit()
             return redirect(url_for("todo"))
 
     user_todos = []

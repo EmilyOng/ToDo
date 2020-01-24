@@ -1,51 +1,72 @@
 <div id="todo_list">
   {% for todo in todos %}
-    <div class="card">
-        <div class="card-header">
-            {{todo["Title"]}}
-                {% with delete_modal_id="delete_task_"+(todo['id']|string) %}
-                  <div class="delete_task_panel">
-                    {% set delete_modal_target="#"+delete_modal_id %}
-                    {% set id=todo["id"] %}
-                    <button type="button" style="float:right; opacity:70%;"
-                            class="btn btn-danger" data-toggle="modal" name={{delete_modal_id}}
-                            value={{id}} data-target={{delete_modal_target}} onclick="event.preventDefault();return false;">
-                        Delete task
-                    </button>
-                    {% include "todo_page/delete_task.html" %}
+    {% set todo_id=todo["id"] %}
+    {% set edit_form_id="edit_form_"+(todo_id|string) %}
+    <form method="post" id={{edit_form_id}}>
+      <div class="card">
+          <div class="card-header">
+              {% set title_id="title_"+(todo_id|string) %}
+              <textarea id={{title_id}} name={{title_id}} class="edit_task_data" style="background:transparent; border-style:none; resize:none;" readonly>{{todo["Title"]}}</textarea>
+              {% if todo["Days left"]|length > 0 %}
+                  <h4 style="display:inline-block; float:right;">
+                    <span style="display:inline-block; float:right;" class="badge badge-warning">{{todo["Days left"]}}</span>
+                  </h4>
+                  <hr/>
+              {% endif %}
+                  {% with delete_modal_id="delete_task_"+(todo['id']|string) %}
+                    <div class="delete_task_panel">
+                      {% set delete_modal_target="#"+delete_modal_id %}
+                      <button type="button" style="float:right; opacity:70%;"
+                              class="btn btn-danger" data-toggle="modal" name={{delete_modal_id}}
+                              value={{todo_id}} data-target={{delete_modal_target}} onclick="event.preventDefault();return false;">
+                          Delete task
+                      </button>
+                      {% include "todo_page/delete_task.html" %}
+                    </div>
+                  {% endwith %}
+                  <button type="button" style="float:right; opacity:70%;" class="btn btn-primary" value={{todo_id}} onclick="edit_task(this);">Edit task</button>
+                  {% set submit_edited_id="submit_edited_"+(todo['id']|string) %}
+                  <button type="submit" name="edit_task_form" style="float:left; opacity:70%; visibility:hidden;" id={{submit_edited_id}} value={{todo_id}} onclick="submit_edited(this);" class="btn btn-success">Save changes</button>
+                  {% set abandon_edited_id="abandon_edited_"+(todo['id']|string) %}
+                  <button type="button" style="float:left; opacity:70%; visibility:hidden;" id={{abandon_edited_id}} value={{todo_id}} class="btn btn-danger" onclick="abandon_task(this);">Abandon changes</button>
+          </div>
+          <div class="card-body">
+              <h5 class="card-title">
+                  {% for tag in todo["Tag"] %}
+                      <span class="badge badge-primary">{{tag}}</span>
+                  {% endfor %}
+              </h5>
+              <hr/>
+              {% set start_date_id="start_date_"+(todo_id|string) %}
+              <p>
+                {% if todo["Start date"] != None %}
+                  Start date: <input type="date" class="edit_task_data" style="border:none; color:black;" name={{start_date_id}} id={{start_date_id}} readonly/>
+                {% else %}
+                  <div class="hidden_editable_fields" style="display:none;">
+                    Start date: <input type="date" class="edit_task_data" style="border:none; color:black;" name={{start_date_id}} id={{start_date_id}} readonly/>
                   </div>
-                {% endwith %}
-
-                <button type="button" style="float:right; opacity:70%;"
-                        class="btn btn-primary" data-toggle="modal" data-target="#edit_task_modal">
-                    Edit task
-                </button>
-
-                <!-- Modal form to edit tasks -->
-                {% with modal_type="edit_task_modal", message="Edit" %}
-                  {% include "todo_page/modal_form.html" %}
-                {% endwith %}
-        </div>
-        <div class="card-body">
-            <h5 class="card-title">
-                {% for tag in todo["Tag"] %}
-                    <span class="badge badge-primary">{{tag}}</span>
-                {% endfor %}
-                {% if todo["Days left"]|length > 0 %}
-                    <span class="badge badge-light">{{todo["Days left"]}}</span>
                 {% endif %}
-            </h5>
-            <hr/>
-            {% if todo["Start date"] != None %}
-                <p>Start date: {{todo["Start date"]}}</p>
-            {% endif %}
-            {% if todo["Due date"] != None %}
-                <p>Due date: {{todo["Due date"]}}</p>
-            {% endif %}
-            <hr/>
-            <p class="card-text">{{todo["Body"]}}</p>
-         </div>
-    </div>
+              </p>
+              {% set due_date_id="due_date_"+(todo_id|string) %}
+              <p>
+                {% if todo["Due date"] != None %}
+                  Due date: <input type="date" class="edit_task_data" style="border:none; color:black;" name={{due_date_id}} id={{due_date_id}} readonly/>
+                {% else %}
+                  <div class="hidden_editable_fields" style="display:none;">
+                    Due date: <input type="date" class="edit_task_data" style="border:none; color:black;" name={{due_date_id}} id={{due_date_id}} readonly/>
+                  </div>
+                {% endif %}
+                </p>
+              <hr/>
+              <p class="card-text">
+                {% set body_id="body_"+(todo_id|string) %}
+                <textarea id={{body_id}} name={{body_id}} class="edit_task_data" style="border-style:none; width:100%;" readonly>{{todo["Body"]}}</textarea>
+              </p>
+              {% set edit_error="edit_task_error_"+(todo_id|string) %}
+              <div class="alert alert-danger" id={{edit_error}} style="display:none;" role="alert"></div>
+           </div>
+      </div>
+    </form>
     <br/>
   {% endfor %}
 </div>

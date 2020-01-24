@@ -1,4 +1,24 @@
 document.getElementById("logout_button").style.visibility = "visible";
+var editable_fields = document.getElementsByClassName("edit_task_data");
+var todos_json = JSON.parse({{todos_json|tojson}});
+var curr_todo = 0;
+var todo_count = 0;
+for (var i=0; i<editable_fields.length; i++) {
+  if (editable_fields[i].id.indexOf("start_date") != -1 && todos_json[curr_todo]["Start date"]) {
+    var start_date = todos_json[curr_todo]["Start date"].split("/");
+    editable_fields[i].value = start_date[2] + "-" + start_date[1] + "-" + start_date[0];
+    todo_count += 1;
+  }
+  if (editable_fields[i].id.indexOf("due_date") != -1 && todos_json[curr_todo]["Due date"]) {
+    var due_date = todos_json[curr_todo]["Due date"].split("/");
+    editable_fields[i].value = due_date[2] + "-" + due_date[1] + "-" + due_date[0];
+    todo_count += 1;
+  }
+  if (todo_count == 2) {
+    todo_count = 0;
+    curr_todo += 1;
+  }
+}
 
 function handle_filter () {
   var filter_selected = document.getElementById("filter_views").value;
@@ -22,22 +42,27 @@ function filter_reverse () {
   }
 }
 
+function check_date (start_date, due_date, error_panel) {
+  if (start_date!="" && due_date!="") {
+      if (start_date > due_date) {
+          document.getElementById(error_panel).innerHTML = "Start date cannot be later than due date.";
+          document.getElementById(error_panel).style.display = "inline";
+          event.preventDefault();
+          return false;
+      }
+      else {
+          return true;
+      }
+  }
+  else {
+      return true;
+  }
+}
+
 function create_task () {
     var start_date = document.getElementById("todo_start_date").value;
     var due_date = document.getElementById("todo_due_date").value;
-    if (start_date!="" && due_date!="") {
-        if (start_date > due_date) {
-            document.getElementById("task_error").innerHTML = "Start date cannot be later than due date.";
-            document.getElementById("task_error").style.visibility = "visible";
-            event.preventDefault();
-        }
-        else {
-            return true;
-        }
-    }
-    else {
-        return true;
-    }
+    check_date(start_date, due_date, "create_task_error");
 }
 
 function track_tags () {
@@ -107,9 +132,56 @@ function confirm_delete_task (btn) {
   var id_attribute = btn.getAttribute("id");
   var char = id_attribute.split("_");
   var id = char[char.length-1];
-  console.log(id);
   original_btn.setAttribute("name", id_attribute);
   original_btn.setAttribute("value", id);
   original_btn.parentNode.setAttribute("id", "delete_task_form_"+id.toString());
   document.getElementById("delete_task_form_"+id.toString()).submit();
+}
+
+function edit_task (btn) {
+  var id = btn.value;
+  var hidden_editable_fields = document.getElementsByClassName("hidden_editable_fields");
+  for (var i=0; i<hidden_editable_fields.length; i++) {
+    hidden_editable_fields[i].style.display = "inline";
+  }
+  var editable_fields = document.getElementsByClassName("edit_task_data");
+  document.getElementById("submit_edited_" + id.toString()).style.visibility = "visible";
+  document.getElementById("abandon_edited_" + id.toString()).style.visibility = "visible";
+  var original_data = {};
+  for (var i=0; i<editable_fields.length; i++) {
+    if (editable_fields[i].id.indexOf(id) != -1) {
+      original_data[editable_fields[i].id] = editable_fields[i].value;
+      editable_fields[i].style.background = "beige";
+      editable_fields[i].removeAttribute("readonly");
+    }
+  }
+  window.localStorage.setItem("original_data", JSON.stringify(original_data));
+}
+
+function submit_edited (btn) {
+  try {
+    window.localStorage.removeItem("original_data");
+  } catch (e) {}
+  var id = btn.value;
+  var start_date = document.getElementById("start_date_" + id.toString()).value;
+  var due_date = document.getElementById("due_date_" + id.toString()).value;
+  check_date(start_date, due_date, "edit_task_error_" + id.toString());
+}
+
+function abandon_task (btn) {
+  var original_data = JSON.parse(window.localStorage.getItem("original_data"));
+  for (var id in original_data) {
+    document.getElementById(id).value = original_data[id];
+  }
+  window.localStorage.removeItem("original_data");
+  var id = btn.value;
+  document.getElementById("submit_edited_" + id.toString()).style.visibility = "hidden";
+  document.getElementById("abandon_edited_" + id.toString()).style.visibility = "hidden";
+  document.getElementById("edit_task_error_" + id.toString()).style.visibility = "hidden";
+  for (var i=0; i<editable_fields.length; i++) {
+    if (editable_fields[i].id.indexOf(id) != -1) {
+      editable_fields[i].style.background = "transparent";
+      editable_fields[i].setAttribute("readonly", true);
+    }
+  }
 }

@@ -1,8 +1,8 @@
-<div class="modal fade" id={{modal_type}} tabindex="-1" role="dialog" aria-labelledby={{modal_type}} aria-hidden="true">
+<div class="modal fade" id="add_task_modal" tabindex="-1" role="dialog" aria-labelledby="add_task_modal" aria-hidden="true">
   <div class="modal-dialog" role="document">
       <div class="modal-content">
           <div class="modal-header">
-              <h5 class="modal-title">{{message}} a new task</h5>
+              <h5 class="modal-title">Create a new task</h5>
               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                   <span aria-hidden="true">&times;</span>
               </button>
@@ -42,7 +42,7 @@
                     <label for="todo_due_date">Due Date</label>
                     <input type="date" class="form-control" id="todo_due_date" name="todo_due_date"/>
                 </div>
-                <div class="alert alert-danger" id="task_error" style="visibility:hidden;" role="alert"></div>
+                <div class="alert alert-danger" id="create_task_error" style="display:none;" role="alert"></div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
