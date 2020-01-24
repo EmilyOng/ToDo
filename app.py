@@ -315,7 +315,7 @@ def todo():
         days_left = ""
         if start_date and due_date:
             today_date = datetime.now()
-            if today_date >= start_date:
+            if start_date <= today_date <= due_date:
                 days_left = due_date-today_date
                 if "days" in str(days_left) or "day" in str(days_left):
                     days_left = str(days_left)

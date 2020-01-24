@@ -142,7 +142,9 @@ function edit_task (btn) {
   var id = btn.value;
   var hidden_editable_fields = document.getElementsByClassName("hidden_editable_fields");
   for (var i=0; i<hidden_editable_fields.length; i++) {
-    hidden_editable_fields[i].style.display = "inline";
+    if (hidden_editable_fields[i].id.indexOf(id) != -1) {
+      hidden_editable_fields[i].style.display = "inline";
+    }
   }
   var editable_fields = document.getElementsByClassName("edit_task_data");
   document.getElementById("submit_edited_" + id.toString()).style.visibility = "visible";
