@@ -30,7 +30,7 @@ function filter_reverse () {
   var child_count = todo_list.childElementCount;
   var todo_children = [];
   while (todo_list.firstChild) {
-    if (todo_list.firstChild.nodeName == "DIV") {
+    if (todo_list.firstChild.nodeName == "FORM") {
       todo_children.push(todo_list.firstChild);
     }
     todo_list.removeChild(todo_list.firstChild);
