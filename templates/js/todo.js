@@ -22,10 +22,15 @@ for (var i=0; i<editable_fields.length; i++) {
 
 function handle_filter () {
   var filter_selected = document.getElementById("filter_views").value;
+  if (filter_selected == "filter_task_completion") {
+    filter_completion();
+    event.preventDefault();
+    return false;
+  }
   filter_form.submit();
 }
 
-function filter_reverse () {
+function get_todo_nodes () {
   var todo_list = document.getElementById("todo_list");
   var child_count = todo_list.childElementCount;
   var todo_children = [];
@@ -35,11 +40,69 @@ function filter_reverse () {
     }
     todo_list.removeChild(todo_list.firstChild);
   }
+  return {"todo_children": todo_children, "child_count": child_count};
+}
+
+function filter_reverse () {
+  var todo_list = document.getElementById("todo_list");
+  var data = get_todo_nodes();
+  var todo_children = data["todo_children"];
+  var child_count = data["child_count"];
   for (var i=parseInt(child_count/2)-1; i>=0; i--) {
     todo_list.appendChild(todo_children[i]);
     var br = document.createElement("br");
     todo_list.appendChild(br);
   }
+}
+
+function filter_completion (hide=false) {
+  todo_children = get_todo_nodes()["todo_children"];
+  var todo_list = document.getElementById("todo_list");
+
+  var todos_json = JSON.parse({{todos_json|tojson}});
+  var completed_tasks_id = [];
+  for (var i=0; i<todos_json.length; i++) {
+    if (todos_json[i]["completed"]) {
+      completed_tasks_id.push(parseInt(todos_json[i]["id"]));
+    }
+  }
+
+  var completed_tasks = [];
+  var uncompleted_tasks = [];
+
+  for (var i=0; i<todo_children.length; i++) {
+    var id_attribute = todo_children[i].getAttribute("id");
+    var char = id_attribute.split("_");
+    var id = parseInt(char[char.length-1]);
+    if (completed_tasks_id.indexOf(id) != -1) {
+      completed_tasks.push(todo_children[i]);
+    }
+    else {
+      uncompleted_tasks.push(todo_children[i]);
+    }
+  }
+
+  for (var i=0; i<uncompleted_tasks.length; i++) {
+    todo_list.appendChild(uncompleted_tasks[i]);
+    var br = document.createElement("br");
+    todo_list.appendChild(br);
+  }
+
+  for (var i=0; i<completed_tasks.length; i++) {
+    if (hide) {
+      completed_tasks[i].style.display = "none";
+    }
+    else {
+      completed_tasks[i].style.display = "block";
+    }
+    todo_list.appendChild(completed_tasks[i]);
+    var br = document.createElement("br");
+    todo_list.appendChild(br);
+  }
+}
+
+function hide_completed_tasks () {
+  filter_completion(document.getElementById("completed_task_checkbox").checked);
 }
 
 function check_date (start_date, due_date, error_panel) {

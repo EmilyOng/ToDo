@@ -33,19 +33,18 @@ Werkzeug==0.16.0
 ![login](documentation/images/login.png)
 * Validation for correct username and password
 * Hashing of passwords to reduce vulnerability of application
-* TODO: email recovery if user forgets password, add back button for easier access to main page
+* TODO: email recovery if user forgets password
 
 ### Sign Up Page
 ![signup](documentation/images/signup.png)
 * Validation checking for all input fields
 * Hashing of passwords to reduce vulnerability of application
-* TODO: add back button for easier access to main page
 
 ### Dashboard
 ![home](documentation/images/home.png)
 * A dashboard showing tasks created
 * Tags above are not currently clickable, but can be deleted (if they are not currently used in any of the tasks)
-* TODO: user notifications for tasks, handle cases where tasks have been completed, add a delete account function
+* TODO: user notifications for tasks, add a delete account function
 
 ### Create task
 ![create_task](documentation/images/create_task.png)

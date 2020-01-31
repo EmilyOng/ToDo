@@ -3,7 +3,12 @@
     {% set todo_id=todo["id"] %}
     {% set edit_form_id="edit_form_"+(todo_id|string) %}
     <form method="post" id={{edit_form_id}}>
-      <div class="card">
+      {% if todo["completed"] %}
+        {% set opacity="40%" %}
+      {% else %}
+        {% set opacity="100%" %}
+      {% endif %}
+      <div class="card" style="opacity:{{opacity}}">
           <div class="card-header">
               {% set title_id="title_"+(todo_id|string) %}
               <textarea id={{title_id}} name={{title_id}} class="edit_task_data" style="background:transparent; border-style:none; resize:none;" readonly>{{todo["Title"]}}</textarea>
@@ -25,6 +30,10 @@
                     </div>
                   {% endwith %}
                   <button type="button" style="float:right; opacity:70%;" class="btn btn-primary" value={{todo_id}} onclick="edit_task(this);">Edit task</button>
+                  <form method="POST">
+                    {% set completed_task_id="completed_task_"+(todo['id']|string) %}
+                    <button type="submit" style="float:right; opacity:70%;" class="btn btn-success" value={{todo_id}} name={{completed_task_id}}>Completed task</button>
+                  </form>
                   {% set submit_edited_id="submit_edited_"+(todo['id']|string) %}
                   <button type="submit" name="edit_task_form" style="float:left; opacity:70%; visibility:hidden;" id={{submit_edited_id}} value={{todo_id}} onclick="submit_edited(this);" class="btn btn-success">Save changes</button>
                   {% set abandon_edited_id="abandon_edited_"+(todo['id']|string) %}

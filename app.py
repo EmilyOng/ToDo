@@ -78,8 +78,7 @@ def index ():
                            "email": request.form["email"]}
             session["form_data"] = ["submit_signup", form_inputs]
             return redirect(url_for("request_processor"))
-
-        if "submit_login" in request.form:
+        elif "submit_login" in request.form:
             user = User.query.filter_by(username=request.form["username"]).first()
             form_inputs = {}
             if user is None:
@@ -91,6 +90,8 @@ def index ():
                 form_inputs["login"] = False
             session["form_data"] = ["submit_login", form_inputs]
             return redirect(url_for("request_processor"))
+        elif "back_to_main" in request.form:
+            return redirect(url_for("index"))
 
     return render_template("index.html")
 
@@ -180,6 +181,11 @@ def todo():
         elif "delete_task" in list(request.form.keys())[0]:
             task = ToDo.query.filter(ToDo.id == int(request.form[list(request.form.keys())[0]])).first()
             db.session.delete(task)
+            db.session.commit()
+            return redirect(url_for("todo"))
+        elif "completed_task" in list(request.form.keys())[0]:
+            task = ToDo.query.filter(ToDo.id == int(request.form[list(request.form.keys())[0]])).first()
+            task.completed = not task.completed
             db.session.commit()
             return redirect(url_for("todo"))
         elif "delete_tag" in request.form:
@@ -350,7 +356,7 @@ def todo():
         todos.append({"Title": user_todo.title, "Body": user_todo.body,
                       "Tag": todo_tag, "Start date": start_date,
                       "Due date": due_date, "Days left": days_left,
-                      "id": user_todo.id})
+                      "id": user_todo.id, "completed": user_todo.completed})
 
     user_tags = current_user.tag_items.all()
     tags = []
@@ -369,7 +375,8 @@ def todo():
             filter_view = "Sort by number of tags"
     else:
         filter_view = ""
-    return render_template("todo.html", todos=todos, todos_json=json.dumps(todos), tags=tags, filter_view=filter_view)
+    return render_template("todo.html", todos=todos, todos_json=json.dumps(todos), tags=tags,
+                            filter_view=filter_view, username=current_user.username)
 
 
 if __name__ == "__main__":
